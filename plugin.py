@@ -1,6 +1,7 @@
 #		   ZiBlue RfPlayer Plugin
 #
 #		   Author:	 zaraki673, 2017
+#		   Edit: Damien, 2019. Fixed device edit/rename, X2D up/down shutter infortype 11, command builder now use ZIA IDs
 #
 #
 """
@@ -160,8 +161,11 @@ class BasePlugin:
 				Options = {"infoType":infoType, "id": str(id), "area": str(Area), "function": "26", "protocol": str(protocol), "frequency":"868950"}
 				stype=0
 			if infoType == "11" :
-				Options = {"infoType":infoType, "id": str(id), "protocol": str(protocol), "subType": "1", "LevelActions": "|||", "LevelNames": "Off|On|Stop", "LevelOffHidden": "False", "SelectorStyle": "0"}
-				stype=18
+				#orig: Options = {"infoType":infoType, "id": str(id), "protocol": str(protocol), "subType": "1", "LevelActions": "|||", "LevelNames": "Off|On|Stop", "LevelOffHidden": "False", "SelectorStyle": "0"}
+				#nw: Options = {"infoType":infoType, "id": str(id), "protocol": str(protocol), "subType": "62", "Switchtype": "15", "LevelActions": "|||", "LevelNames": "On|Stop|Off", "LevelOffHidden": "False", "SelectorStyle": "1"}
+				Options = {"infoType":infoType, "id": str(id), "protocol": str(protocol), "subType": "0", "Switchtype": "15", "LevelActions": "|||", "LevelNames": "On|Stop|Off", "LevelOffHidden": "False", "SelectorStyle": "0"}
+				#orig: stype=18
+				stype=15
 			if infoType == "15":
 				Options = {"infoType":infoType, "id": str(id), "protocol": str(protocol), "frequency":"868950"}
 				stype=0
@@ -184,6 +188,9 @@ class BasePlugin:
 					Domoticz.Device(Name="RTS - " + Parameters["Mode2"],  Unit=nbrdevices, TypeName="Selector Switch", Switchtype=18, Image=12, Options=Options).Create()
 				elif infoType=="10" and Options['function']=="2" :
 					Domoticz.Device(Name="X2DELEC Switch - Area " + Options['area'],  Unit=nbrdevices, TypeName="Selector Switch", Switchtype=18, Image=12, Options=Options).Create()
+				elif infoType=="11" : #DA debug volet: 
+					Domoticz.Device(Name="X2D SHUTTER - " + Parameters["Mode2"], Unit=nbrdevices, Type=17, Subtype=0, Switchtype=15, Image=15).Create()
+					#nw: Domoticz.Device(Name="X2D SHUTTER - " + Parameters["Mode2"], Unit=nbrdevices, TypeName="Selector Switch", Switchtype=15, Image=15, Options=Options).Create()
 				else :
 					Domoticz.Device(Name="Manual Switch - " + Parameters["Mode2"], Unit=nbrdevices, Type=16, Switchtype=stype).Create()
 				Devices[nbrdevices].Update(nValue =0,sValue = "0",Options = Options)
@@ -469,8 +476,13 @@ def ReadData(ReqRcv):
 		return
 
 def SendtoRfplayer(Unit, Command, Level, Hue):
+	Domoticz.Debug("DA debug clicked level: " + str(Level))
+	Domoticz.Debug("DA debug clicked command: " + str(Command))
 	Options=Devices[Unit].Options
 	Domoticz.Debug("SendtoRfplayer - Options found in DB: " + str(Devices[Unit].Options) + " for devices unit " + str(Unit))
+	#if id is decimal must write command with "ID". Else id is not decimal (A1 or B4 or else), command does not include "ID":
+	if str(Options['id'])[0].isdigit() : fulltextid = " ID "+ Options['id']
+	else : fulltextid = " " + Options['id']
 	infoType = Options['infoType']
 	protocol=Options['protocol']
 	if protocol =="1": protocol="X10"
@@ -496,8 +508,7 @@ def SendtoRfplayer(Unit, Command, Level, Hue):
 	if protocol =="11": protocol="PARROT"
 
 	if infoType == "0" and  protocol == "PARROT":
-		id=Options['id']
-		lineinput='ZIA++' + str(Command.upper()) + " " + protocol + " " + id
+		lineinput='ZIA++' + str(Command.upper()) + " " + protocol + fulltextid
 		SerialConn.Send(bytes(lineinput + '\n\r','utf-8'))
 		if Command == "On":
 			Devices[Unit].Update(nValue =1,sValue = "on")
@@ -505,17 +516,15 @@ def SendtoRfplayer(Unit, Command, Level, Hue):
 			Devices[Unit].Update(nValue =0,sValue = "off")
 			
 	if infoType == "0" and protocol != "PARROT":
-		id=Options['id']
-		lineinput='ZIA++' + str(Command.upper()) + " " + protocol + " ID " + id
+		lineinput='ZIA++' + str(Command.upper()) + " " + protocol + fulltextid
 		SerialConn.Send(bytes(lineinput + '\n\r','utf-8'))
 		if Command == "On":
 			Devices[Unit].Update(nValue =1,sValue = "on")
 		if Command == "Off":
 			Devices[Unit].Update(nValue =0,sValue = "off")
-			
+
 	if infoType == "1" or infoType == "2":
-		id=Options['id']
-		lineinput='ZIA++' + str(Command.upper()) + " " + protocol + " ID " + id
+		lineinput='ZIA++' + str(Command.upper()) + " " + protocol + fulltextid 
 		SerialConn.Send(bytes(lineinput + '\n\r','utf-8'))
 		if Command == "On":
 			Devices[Unit].Update(nValue =1,sValue = "on")
@@ -524,26 +533,25 @@ def SendtoRfplayer(Unit, Command, Level, Hue):
 				#Devices[Unit].Update(nValue =0,sValue = "off")
 		
 	if infoType == "3" :
-		id=Options['id']
 		qualifier=Options['subType']
 		if qualifier=="0":
 		###start MAj from Deennoo
 			if Level == 0 :
-				lineinput='ZIA++' + str("OFF " + protocol + " ID " + id )
+				lineinput='ZIA++' + str("OFF " + protocol + fulltextid )
 			if Level == 10 :
-				lineinput='ZIA++' + str("DIM %50 " + protocol + " ID " + id )
+				lineinput='ZIA++' + str("DIM %50 " + protocol + fulltextid )
 			if Level == 20 :
-				lineinput='ZIA++' + str("ON " + protocol + " ID " + id )
+				lineinput='ZIA++' + str("ON " + protocol + fulltextid )
 			if Level == 30 :
-				lineinput='ZIA++' + str("ASSOC " + protocol + " ID " + id )
+				lineinput='ZIA++' + str("ASSOC " + protocol + fulltextid )
 		###End MAj from Deennoo
 		if qualifier=="1":
 			if Level == 10 :
-				lineinput='ZIA++' + str("ON " + protocol + " ID " + id + " QUALIFIER " + qualifier)
+				lineinput='ZIA++' + str("ON " + protocol + fulltextid + " QUALIFIER " + qualifier)
 			if Level == 20 :
-				lineinput='ZIA++' + str("OFF " + protocol + " ID " + id + " QUALIFIER " + qualifier)
+				lineinput='ZIA++' + str("OFF " + protocol + fulltextid + " QUALIFIER " + qualifier)
 			if Level == 30 :
-				lineinput='ZIA++' + str("ASSOC " + protocol + " ID " + id + " QUALIFIER " + qualifier)
+				lineinput='ZIA++' + str("ASSOC " + protocol + fulltextid + " QUALIFIER " + qualifier)
 		SerialConn.Send(bytes(lineinput + '\n\r','utf-8'))
 		Devices[Unit].Update(nValue =0,sValue = str(Level))
 		
@@ -568,16 +576,21 @@ def SendtoRfplayer(Unit, Command, Level, Hue):
 
 	if infoType == "11" :
 		subType=Options['subType']
-		if subType == "1" :
-			id=Options['id']
-			if Level == 10 :
-				lineinput='ZIA++' + str("ON " + protocol + " ID " + id )#+ " QUALIFIER " + qualifier)
-			if Level == 20 :
-				lineinput='ZIA++' + str("OFF " + protocol + " ID " + id ) #+ " QUALIFIER " + qualifier)
-			if Level == 30 :
-				lineinput='ZIA++' + str("ASSOC " + protocol + " ID " + id ) #+ " QUALIFIER " + qualifier)
+		#orig: if subType == "1" :
+		if subType == "0" :
+			if Command == "Off" :	#bug domoticz invert
+				lineinput='ZIA++' + str("ON " + protocol + fulltextid )#+ " QUALIFIER " + qualifier)
+			if Command == "On" :
+				lineinput='ZIA++' + str("OFF " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
+			#if Level == 10 :
+			#	lineinput='ZIA++' + str("ON " + protocol + fulltextid )#+ " QUALIFIER " + qualifier)
+			#if Level == 0 :
+			#	lineinput='ZIA++' + str("OFF " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
+			#if Level == 20 :
+			#	lineinput='ZIA++' + str("ASSOC " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
 			SerialConn.Send(bytes(lineinput + '\n\r','utf-8'))
-			Devices[Unit].Update(nValue =0,sValue = str(Level))
+			#orig: Devices[Unit].Update(nValue =0,sValue = str(Level))
+			Devices[Unit].Update(nValue =0,sValue = str(Command))
 				
 def FreeUnit() :
 	FreeUnit=""
@@ -609,16 +622,16 @@ def DecodeInfoType0(DecData, infoType):
 		for x in Devices:
 			#JJE - start
 			DOptions = Devices[x].Options
-	#				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
-					if DOptions["id"] == Options["id"] :
-					#JJE - end
-						IsCreated = True
-						nbrdevices=x
-						Domoticz.Log("Devices already exist. Unit=" + str(x))
-						Domoticz.Debug("Options found in DB: " + str(Devices[x].Options) + " for devices unit " + str(x))
-						break
+			if "protocol" in DOptions :		# fix LevelOffHidden:undefined
+				if  DOptions["protocol"] == Options["protocol"] :
+					if DOptions["infoType"] == Options["infoType"] :
+						if DOptions["id"] == Options["id"] :
+						#JJE - end
+							IsCreated = True
+							nbrdevices=x
+							Domoticz.Log("Devices already exist. Unit=" + str(x))
+							Domoticz.Debug("Options found in DB: " + str(Devices[x].Options) + " for devices unit " + str(x))
+							break
 		########### create device if not find ###############
 		if IsCreated == False and Parameters["Mode4"] == "True" :
 			nbrdevices=FreeUnit()
@@ -661,17 +674,17 @@ def DecodeInfoType1(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 			Domoticz.Debug("DOptions : " + str(DOptions))
-	#				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
-					if DOptions["id"] == Options["id"] :
-					#JJE - end
-						IsCreated = True
-						nbrdevices=x
-						Domoticz.Log("Devices already exist. Unit=" + str(x))
-						Domoticz.Debug("Options found in DB: " + str(Devices[x].Options) + " for devices unit " + str(x))
-						#No need to walk on the other devices
-						break
+			if "protocol" in DOptions :		# fix LevelOffHidden:undefined
+				if  DOptions["protocol"] == Options["protocol"] :
+					if DOptions["infoType"] == Options["infoType"] :
+						if DOptions["id"] == Options["id"] :
+						#JJE - end
+							IsCreated = True
+							nbrdevices=x
+							Domoticz.Log("Devices already exist. Unit=" + str(x))
+							Domoticz.Debug("Options found in DB: " + str(Devices[x].Options) + " for devices unit " + str(x))
+							#No need to walk on the other devices
+							break
 		if IsCreated == False and Parameters["Mode4"] == "True" :
 			nbrdevices=FreeUnit()
 			Domoticz.Device(Name=protocol + " - " + id, Unit=nbrdevices, Type=16, Switchtype=0).Create()
