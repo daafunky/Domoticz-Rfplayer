@@ -582,6 +582,8 @@ def SendtoRfplayer(Unit, Command, Level, Hue):
 				lineinput='ZIA++' + str("ON " + protocol + fulltextid )#+ " QUALIFIER " + qualifier)
 			if Command == "On" :
 				lineinput='ZIA++' + str("OFF " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
+			if Command == "Stop" :
+				lineinput='ZIA++' + str("OFF " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
 			#if Level == 10 :
 			#	lineinput='ZIA++' + str("ON " + protocol + fulltextid )#+ " QUALIFIER " + qualifier)
 			#if Level == 0 :
@@ -623,8 +625,8 @@ def DecodeInfoType0(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 			if "protocol" in DOptions :		# fix LevelOffHidden:undefined
-				if  DOptions["protocol"] == Options["protocol"] :
-					if DOptions["infoType"] == Options["infoType"] :
+				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
 							IsCreated = True
@@ -675,8 +677,8 @@ def DecodeInfoType1(DecData, infoType):
 			DOptions = Devices[x].Options
 			Domoticz.Debug("DOptions : " + str(DOptions))
 			if "protocol" in DOptions :		# fix LevelOffHidden:undefined
-				if  DOptions["protocol"] == Options["protocol"] :
-					if DOptions["infoType"] == Options["infoType"] :
+				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
 							IsCreated = True
@@ -738,8 +740,8 @@ def DecodeInfoType2(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -764,8 +766,8 @@ def DecodeInfoType2(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -791,8 +793,8 @@ def DecodeInfoType2(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -853,8 +855,8 @@ def DecodeInfoType3(DecData, infoType):
 				DOptions = Devices[x].Options
 				Domoticz.Debug("DOptions : " + str(DOptions))
 	#				if Devices[x].Options == Options :
-				if  DOptions["protocol"] == Options["protocol"] :
-					if DOptions["infoType"] == Options["infoType"] :
+				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
 							IsCreated = True
@@ -889,8 +891,8 @@ def DecodeInfoType3(DecData, infoType):
 				#JJE - start
 				DOptions = Devices[x].Options
 	#				if Devices[x].Options == Options :
-				if  DOptions["protocol"] == Options["protocol"] :
-					if DOptions["infoType"] == Options["infoType"] :
+				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
 							IsCreated = True
@@ -1073,8 +1075,8 @@ def DecodeInfoType5(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1099,8 +1101,8 @@ def DecodeInfoType5(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1125,8 +1127,8 @@ def DecodeInfoType5(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1151,8 +1153,8 @@ def DecodeInfoType5(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1177,8 +1179,8 @@ def DecodeInfoType5(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1244,8 +1246,8 @@ def DecodeInfoType6(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1286,8 +1288,8 @@ def DecodeInfoType7(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1464,8 +1466,8 @@ def DecodeInfoType9(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 #				if Devices[x].Options == Options :
-			if  DOptions["protocol"] == Options["protocol"] :
-				if DOptions["infoType"] == Options["infoType"] :
+			if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 					if DOptions["id"] == Options["id"] :
 					#JJE - end
 						IsCreated = True
@@ -1599,8 +1601,8 @@ def DecodeInfoType11(DecData, infoType):
 				#JJE - start
 				DOptions = Devices[x].Options
 	#				if Devices[x].Options == Options :
-				if  DOptions["protocol"] == Options["protocol"] :
-					if DOptions["infoType"] == Options["infoType"] :
+				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
 							IsCreated = True
@@ -1631,8 +1633,8 @@ def DecodeInfoType11(DecData, infoType):
 				#JJE - start
 				DOptions = Devices[x].Options
 	#				if Devices[x].Options == Options :
-				if  DOptions["protocol"] == Options["protocol"] :
-					if DOptions["infoType"] == Options["infoType"] :
+				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
 							IsCreated = True
