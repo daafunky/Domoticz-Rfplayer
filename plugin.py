@@ -476,10 +476,8 @@ def ReadData(ReqRcv):
 		return
 
 def SendtoRfplayer(Unit, Command, Level, Hue):
-	Domoticz.Debug("DA debug clicked level: " + str(Level))
-	Domoticz.Debug("DA debug clicked command: " + str(Command))
 	Options=Devices[Unit].Options
-	Domoticz.Debug("SendtoRfplayer - Options found in DB: " + str(Devices[Unit].Options) + " for devices unit " + str(Unit))
+	Domoticz.Debug("SendtoRfplayer - Options found in DB: " + str(Devices[Unit].Options) + " for devices unit " + str(Unit)) + " clicked level: " + str(Level) + " clicked command: " + str(Command)
 	#if id is decimal must write command with "ID". Else id is not decimal (A1 or B4 or else), command does not include "ID":
 	if str(Options['id'])[0].isdigit() : fulltextid = " ID "+ Options['id']
 	else : fulltextid = " " + Options['id']
@@ -625,7 +623,7 @@ def DecodeInfoType0(DecData, infoType):
 			#JJE - start
 			DOptions = Devices[x].Options
 			if "protocol" in DOptions :		# fix LevelOffHidden:undefined
-				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if DOptions["protocol"] == Options["protocol"] :
 					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
@@ -677,7 +675,7 @@ def DecodeInfoType1(DecData, infoType):
 			DOptions = Devices[x].Options
 			Domoticz.Debug("DOptions : " + str(DOptions))
 			if "protocol" in DOptions :		# fix LevelOffHidden:undefined
-				if  'protocol' in DOptions and DOptions["protocol"] == Options["protocol"] :
+				if DOptions["protocol"] == Options["protocol"] :
 					if 'infoType' in DOptions and DOptions["infoType"] == Options["infoType"] :
 						if DOptions["id"] == Options["id"] :
 						#JJE - end
