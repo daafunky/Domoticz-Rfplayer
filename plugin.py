@@ -477,7 +477,7 @@ def ReadData(ReqRcv):
 
 def SendtoRfplayer(Unit, Command, Level, Hue):
 	Options=Devices[Unit].Options
-	Domoticz.Debug("SendtoRfplayer - Options found in DB: " + str(Devices[Unit].Options) + " for devices unit " + str(Unit)) + " clicked level: " + str(Level) + " clicked command: " + str(Command)
+	Domoticz.Debug("SendtoRfplayer - Options found in DB: " + str(Devices[Unit].Options) + " for devices unit " + str(Unit) + " clicked level: " + str(Level) + " clicked command: " + str(Command))
 	#if id is decimal must write command with "ID". Else id is not decimal (A1 or B4 or else), command does not include "ID":
 	if str(Options['id'])[0].isdigit() : fulltextid = " ID "+ Options['id']
 	else : fulltextid = " " + Options['id']
