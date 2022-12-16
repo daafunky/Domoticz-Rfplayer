@@ -575,21 +575,16 @@ def SendtoRfplayer(Unit, Command, Level, Hue):
 	if infoType == "11" :
 		subType=Options['subType']
 		#orig: if subType == "1" :
-		if subType == "0" :
-			if Command == "Off" :	#bug domoticz invert
+		if subType == "0" :	
+			#Domoticz.Debug("shutter debug command : " + Command)	#debug 2022-12-16 build 14854 On/Off replaced by Open/Close
+			if Command == "Open" :
 				lineinput='ZIA++' + str("ON " + protocol + fulltextid )#+ " QUALIFIER " + qualifier)
-			if Command == "On" :
+			if Command == "Close" :
 				lineinput='ZIA++' + str("OFF " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
+			#TODO: rfplayer parrot to stop command not supported
 			if Command == "Stop" :
 				lineinput='ZIA++' + str("OFF " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
-			#if Level == 10 :
-			#	lineinput='ZIA++' + str("ON " + protocol + fulltextid )#+ " QUALIFIER " + qualifier)
-			#if Level == 0 :
-			#	lineinput='ZIA++' + str("OFF " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
-			#if Level == 20 :
-			#	lineinput='ZIA++' + str("ASSOC " + protocol + fulltextid ) #+ " QUALIFIER " + qualifier)
 			SerialConn.Send(bytes(lineinput + '\n\r','utf-8'))
-			#orig: Devices[Unit].Update(nValue =0,sValue = str(Level))
 			Devices[Unit].Update(nValue =0,sValue = str(Command))
 				
 def FreeUnit() :
