@@ -9,3 +9,6 @@ Author:	 zaraki673, 2017
 
 Edit: Daafunky, 2019. 
 Fixed device edit/rename, X2D up/down shutter infortype 11, command builder now use ZIA IDs. Works well on Domoticz Version: 2021.1 (build 13240)
+
+Edit: Daafunky, 2022-12-16
+debug domoticz build 14854 On/Off replaced by Open/Close for X2DSHUTTER
